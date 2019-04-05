@@ -1,5 +1,5 @@
 # CEN Scaler
-Alibaba Cloud Function Compute to automatically scale CEN bandwidth packages based on different metrics and timing events. It ships together with a Terraform template that sets up all neccessary configurations and services to get you going fast.
+This project helps to automatically scale CEN bandwidth packages based on different metrics and timing events. It ships together with Alibaba Cloud Function code and Terraform templates that set up all neccessary configurations and services to get you going fast.
 
 # Installation and Usage
 TODO
