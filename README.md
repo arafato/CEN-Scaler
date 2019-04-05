@@ -4,6 +4,9 @@ This project helps to automatically scale CEN bandwidth packages based on differ
 # Installation and Usage
 TODO
 
+# How it works
+TODO
+
 # Contributions
 ## What do I need to know to help?
 If you are interested in making a code contribution and would like to learn more about the technologies that we use, check out the list below.
