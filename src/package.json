@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/arafato/CEN-Scaler/issues"
   },
-  "homepage": "https://github.com/arafato/CEN-Scaler#readme"
+  "homepage": "https://github.com/arafato/CEN-Scaler#readme",
+  "dependencies": {
+    "@alicloud/pop-core": "^1.7.6"
+  }
 }
