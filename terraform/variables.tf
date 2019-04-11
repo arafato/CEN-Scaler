@@ -26,9 +26,9 @@ variable "function_description" {
   default     = "Created by CEN-Scaler"
 }
 
-variable "function_filename" {
+variable "function_zip" {
   description = "The path to the function's deployment package within the local filesystem. It is conflict with the oss_-prefixed options.."
-  default     = "./fc.zip"
+  default     = "fc.zip"
 }
 
 variable "function_memory_size" {
@@ -44,4 +44,9 @@ variable "function_runtime" {
 variable "function_handler" {
   description = "The function entry point in your code."
   default     = "index.handler"
+}
+
+variable "trigger_name" {
+  description = "The name of the time-based trigger"
+  default = "timetrigger"
 }
