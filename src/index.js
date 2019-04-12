@@ -22,9 +22,9 @@ module.exports.handler = function (event, context, callback) {
         for (const rc of event.regionConnections) {
             const rcparams = {
                 "CenId": CEN_ID,
-                "LocalRegionId": event.sourceRegion,
-                "OppositeRegionId": event.targetRegion,
-                "BandwidthLimit": event.bandwidth
+                "LocalRegionId": rc.sourceRegion,
+                "OppositeRegionId": rc.targetRegion,
+                "BandwidthLimit": rc.bandwidth
             }
             await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' })
         }
