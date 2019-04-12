@@ -26,7 +26,7 @@ module.exports.handler = function (event, context, callback) {
                 "OppositeRegionId": rc.targetRegion,
                 "BandwidthLimit": rc.bandwidth
             }
-            await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' })
+            await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' });
         }
     } catch (err) {
         console.log(ex);
