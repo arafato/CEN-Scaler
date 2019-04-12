@@ -1,5 +1,6 @@
 variable "cen_id" {
   description = "The ID of your Cloud Enterprise Netork (CEN) instance."
+  value = "YOUR CEN ID"
 }
 
 variable "cen-scaler-policy" {

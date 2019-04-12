@@ -1,30 +1,34 @@
-const accessToken = process.env['ACCESS_TOKEN'];
+const Core = require('@alicloud/pop-core');
+
+const CEN_ID = process.env['CEN_ID'];
 
 module.exports.handler = function (event, context, callback) {
-   event = JSON.parse(event);
-   
-   
-}
+    const client = new Core({
+        accessKeyId: context.credentials.accessKeyId,
+        accessKeySecret: context.credentials.accessKeySecret,
+        securityToken: context.credentials.securityToken,
+        endpoint: 'https://cbn.aliyuncs.com',
+        apiVersion: '2017-09-12'
+    });
 
+    event = JSON.parse(event);
 
-
-
-
-
-
-
-const eventFormat = {
-    cenBandwidth: 20,
-    regionConnections: [
-        {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-bejing',
-            bandwidth: 10
-        },
-        {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-shanghai',
-            bandwidth: 10
+    try {
+        const cenparams = {
+            "CenBandwidthPackageId": CEN_ID,
+            "Bandwidth": event.cenBandwidth
         }
-    ]
+        await client.request('ModifyCenBandwidthPackageSpec', cenparams, { method: 'POST' });
+        for (const rc of event.regionConnections) {
+            const rcparams = {
+                "CenId": CEN_ID,
+                "LocalRegionId": event.sourceRegion,
+                "OppositeRegionId": event.targetRegion,
+                "BandwidthLimit": event.bandwidth
+            }
+            await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' })
+        }
+    } catch (err) {
+        console.log(ex);
+    }
 }

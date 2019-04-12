@@ -6,6 +6,68 @@
 ##    ## ##       ##   ###    ##    ## ##    ## ##     ## ##       ##       ##    ##  
  ######  ######## ##    ##     ######   ######  ##     ## ######## ######## ##     ##
 
+
+# TODO: Add detailed explanation on how to configure a timing event
+resource "alicloud_fc_trigger" "triggerscale_1" {
+  service = "${alicloud_fc_service.censcalerservice.name}"
+  function = "${alicloud_fc_function.scale.name}"
+  name = "${var.trigger_name}"
+  type = "timer"
+  config = <<EOF
+    {
+      "cronExpression": "0 0 6 ? * MON"
+      "enable": true,
+      "payload": "{
+        cenBandwidth: 20,
+        regionConnections: [
+          {
+            sourceRegion: 'eu-central-1',
+            targetRegion: 'cn-bejing',
+            bandwidth: 10
+          },
+          {
+            sourceRegion: 'eu-central-1',
+            targetRegion: 'cn-shanghai',
+            bandwidth: 10
+          }
+        ] 
+      }"
+    }
+  EOF
+}
+
+resource "alicloud_fc_trigger" "triggerscale_2" {
+  service = "${alicloud_fc_service.censcalerservice.name}"
+  function = "${alicloud_fc_function.scale.name}"
+  name = "${var.trigger_name}"
+  type = "timer"
+  config = <<EOF
+    {
+      "cronExpression": "0 0 6 ? * SAT"
+      "enable": true,
+      "payload": "{
+        cenBandwidth: 10,
+        regionConnections: [
+          {
+            sourceRegion: 'eu-central-1',
+            targetRegion: 'cn-bejing',
+            bandwidth: 5
+          },
+          {
+            sourceRegion: 'eu-central-1',
+            targetRegion: 'cn-shanghai',
+            bandwidth: 5
+          }
+        ] 
+      }"
+    }
+  EOF
+}
+
+#############################################################
+## DO NOT MODIFY BELOW UNLESS YOU KNOW WHAT YOU ARE DOING! ##
+#############################################################
+
 ######################################################
 ## RAM Setup
 resource "alicloud_ram_role" "role" {
@@ -70,60 +132,7 @@ resource "alicloud_fc_function" "scale" {
   runtime     = "${var.function_runtime}"
   handler     = "${var.function_handler}"
   role = "${alicloud_ram_role.role.arn}"
-}
-
-resource "alicloud_fc_trigger" "triggerscale_1" {
-  service = "${alicloud_fc_service.censcalerservice.name}"
-  function = "${alicloud_fc_function.scale.name}"
-  name = "${var.trigger_name}"
-  type = "timer"
-  config = <<EOF
-    {
-      "cronExpression": "0 0 6 ? * MON"
-      "enable": true,
-      "payload": "{
-        cenBandwidth: 20,
-        regionConnections: [
-          {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-bejing',
-            bandwidth: 10
-          },
-          {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-shanghai',
-            bandwidth: 10
-          }
-        ] 
-      }"
-    }
-  EOF
-}
-
-resource "alicloud_fc_trigger" "triggerscale_2" {
-  service = "${alicloud_fc_service.censcalerservice.name}"
-  function = "${alicloud_fc_function.scale.name}"
-  name = "${var.trigger_name}"
-  type = "timer"
-  config = <<EOF
-    {
-      "cronExpression": "0 0 6 ? * SAT"
-      "enable": true,
-      "payload": "{
-        cenBandwidth: 10,
-        regionConnections: [
-          {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-bejing',
-            bandwidth: 5
-          },
-          {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-shanghai',
-            bandwidth: 5
-          }
-        ] 
-      }"
-    }
-  EOF
+  environment_variables {
+    CEN_ID = "${var.cen_id}"
+  }
 }
