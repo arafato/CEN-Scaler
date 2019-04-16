@@ -1,14 +1,14 @@
 variable "cen_id" {
   description = "The ID of your Cloud Enterprise Netork (CEN) instance."
-  value = "YOUR CEN ID"
+  default = "thisdoesnotexist"
 }
 
 variable "cen-scaler-policy" {
-  value = "cen-scaler-policy"
+  default = "cen-scaler-policy"
 }
 
 variable "cen-scaler-role" {
-  value = "cen-scaler-role"
+  default = "cen-scaler-role"
 }
 
 variable "service_name" {

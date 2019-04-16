@@ -15,25 +15,25 @@ resource "alicloud_fc_trigger" "triggerscale_1" {
   type = "timer"
   config = <<EOF
     {
-      "cronExpression": "0 0 6 ? * MON"
+      "cronExpression": "0 0 6 ? * MON",
       "enable": true,
-      "payload": "{
-        cenBandwidth: 20,
-        regionConnections: [
+      "payload": {
+        "cenBandwidth": 20,
+        "regionConnections": [
           {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-bejing',
-            bandwidth: 10
+            "sourceRegion": "eu-central-1",
+            "targetRegion": "cn-bejing",
+            "bandwidth": 10
           },
           {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-shanghai',
-            bandwidth: 10
+            "sourceRegion": "eu-central-1",
+            "targetRegion": "cn-shanghai",
+            "bandwidth": 10
           }
         ] 
-      }"
+      }
     }
-  EOF
+EOF
 }
 
 resource "alicloud_fc_trigger" "triggerscale_2" {
@@ -43,25 +43,25 @@ resource "alicloud_fc_trigger" "triggerscale_2" {
   type = "timer"
   config = <<EOF
     {
-      "cronExpression": "0 0 6 ? * SAT"
+      "cronExpression": "0 0 6 ? * SAT",
       "enable": true,
-      "payload": "{
-        cenBandwidth: 10,
-        regionConnections: [
+      "payload": {
+        "cenBandwidth": 10,
+        "regionConnections": [
           {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-bejing',
-            bandwidth: 5
+            "sourceRegion": "eu-central-1",
+            "targetRegion": "cn-bejing",
+            "bandwidth": 5
           },
           {
-            sourceRegion: 'eu-central-1',
-            targetRegion: 'cn-shanghai',
-            bandwidth: 5
+            "sourceRegion": "eu-central-1",
+            "targetRegion": "cn-shanghai",
+            "bandwidth": 5
           }
         ] 
-      }"
+      }
     }
-  EOF
+EOF
 }
 
 #############################################################
@@ -121,6 +121,7 @@ resource "alicloud_fc_service" "censcalerservice" {
   name            = "${var.service_name}"
   description     = "${var.service_description}"
   internet_access = "false"
+  role            = "${alicloud_ram_role.role.arn}"
 }
 
 resource "alicloud_fc_function" "scale" {
@@ -131,7 +132,6 @@ resource "alicloud_fc_function" "scale" {
   memory_size = "${var.function_memory_size}"
   runtime     = "${var.function_runtime}"
   handler     = "${var.function_handler}"
-  role = "${alicloud_ram_role.role.arn}"
   environment_variables {
     CEN_ID = "${var.cen_id}"
   }
