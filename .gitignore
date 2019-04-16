@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# CEN Scaler
+terraform/fc.zip
+
+# terraform
+terraform/.terraform
