@@ -64,4 +64,5 @@ typings/
 terraform/fc.zip
 
 # terraform
+*.tfstate*
 terraform/.terraform
