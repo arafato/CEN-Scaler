@@ -15,23 +15,23 @@ resource "alicloud_fc_trigger" "triggerscale_1" {
   type = "timer"
   config = <<EOF
     {
-      "cronExpression": "0 0 6 ? * MON",
+      "cronExpression": "0 0 6 ? * SAT",
       "enable": true,
       "payload": ${jsonencode(chomp("
       {
-         cenBandwidth: 20,
-         regionConnections: [
+         \"cenBandwidth\": 20,
+         \"regionConnections\": [
           {
-            sourceRegion: eu-central-1,
-            targetRegion: cn-bejing,
-            bandwidth: 10
+            \"sourceRegion\": \"eu-central-1\",
+            \"targetRegion\": \"cn-bejing\",
+            \"bandwidth\": 10
           },
           {
-            sourceRegion: eu-central-1,
-            targetRegion: cn-shanghai,
-            bandwidth: 10
+            \"sourceRegion\": \"eu-central-1\",
+            \"targetRegion\": \"cn-shanghai\",
+            \"bandwidth\": 10
           }
-        ] 
+         ]
       }"))}
     }
 EOF
@@ -48,19 +48,19 @@ resource "alicloud_fc_trigger" "triggerscale_2" {
       "enable": true,
       "payload": ${jsonencode(chomp("
       {
-         cenBandwidth: 10,
-         regionConnections: [
+         \"cenBandwidth\": 10,
+         \"regionConnections\": [
           {
-            sourceRegion: eu-central-1,
-            targetRegion: cn-bejing,
-            bandwidth: 5
+            \"sourceRegion\": \"eu-central-1\",
+            \"targetRegion\": \"cn-bejing\",
+            \"bandwidth\": 5
           },
           {
-            sourceRegion: eu-central-1,
-            targetRegion: cn-shanghai,
-            bandwidth: 5
+            \"sourceRegion\": \"eu-central-1\",
+            \"targetRegion\": \"cn-shanghai\",
+            \"bandwidth\": 5
           }
-        ] 
+         ]
       }"))}
     }
 EOF

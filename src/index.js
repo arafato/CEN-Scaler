@@ -11,7 +11,8 @@ module.exports.handler = function (event, context, callback) {
         apiVersion: '2017-09-12'
     });
 
-    event = JSON.parse(event);
+
+    event = JSON.parse(event.toString("utf8"));
 
     try {
         const cenparams = {
@@ -27,8 +28,11 @@ module.exports.handler = function (event, context, callback) {
                 "BandwidthLimit": rc.bandwidth
             }
             await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' });
+            callback(null, 'Successfully scaled CEN Bandwidth.'); 
+
         }
     } catch (err) {
-        console.log(ex);
+        console.log(err);
+        callback(err, 'Error while scaling CEN Bandwidth.'); 
     }
 }
