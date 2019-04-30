@@ -46,8 +46,3 @@ variable "function_handler" {
   description = "The function entry point in your code."
   default     = "index.handler"
 }
-
-variable "trigger_name" {
-  description = "The name of the time-based trigger"
-  default = "timetrigger"
-}

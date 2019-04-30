@@ -11,27 +11,28 @@
 resource "alicloud_fc_trigger" "triggerscale_1" {
   service = "${alicloud_fc_service.censcalerservice.name}"
   function = "${alicloud_fc_function.scale.name}"
-  name = "${var.trigger_name}"
+  name = "timetrigger1"
   type = "timer"
   config = <<EOF
     {
       "cronExpression": "0 0 6 ? * MON",
       "enable": true,
-      "payload": {
-        "cenBandwidth": 20,
-        "regionConnections": [
+      "payload": ${jsonencode(chomp("
+      {
+         cenBandwidth: 20,
+         regionConnections: [
           {
-            "sourceRegion": "eu-central-1",
-            "targetRegion": "cn-bejing",
-            "bandwidth": 10
+            sourceRegion: eu-central-1,
+            targetRegion: cn-bejing,
+            bandwidth: 10
           },
           {
-            "sourceRegion": "eu-central-1",
-            "targetRegion": "cn-shanghai",
-            "bandwidth": 10
+            sourceRegion: eu-central-1,
+            targetRegion: cn-shanghai,
+            bandwidth: 10
           }
         ] 
-      }
+      }"))}
     }
 EOF
 }
@@ -39,27 +40,28 @@ EOF
 resource "alicloud_fc_trigger" "triggerscale_2" {
   service = "${alicloud_fc_service.censcalerservice.name}"
   function = "${alicloud_fc_function.scale.name}"
-  name = "${var.trigger_name}"
+  name = "timetrigger2"
   type = "timer"
   config = <<EOF
     {
       "cronExpression": "0 0 6 ? * SAT",
       "enable": true,
-      "payload": {
-        "cenBandwidth": 10,
-        "regionConnections": [
+      "payload": ${jsonencode(chomp("
+      {
+         cenBandwidth: 10,
+         regionConnections: [
           {
-            "sourceRegion": "eu-central-1",
-            "targetRegion": "cn-bejing",
-            "bandwidth": 5
+            sourceRegion: eu-central-1,
+            targetRegion: cn-bejing,
+            bandwidth: 5
           },
           {
-            "sourceRegion": "eu-central-1",
-            "targetRegion": "cn-shanghai",
-            "bandwidth": 5
+            sourceRegion: eu-central-1,
+            targetRegion: cn-shanghai,
+            bandwidth: 5
           }
         ] 
-      }
+      }"))}
     }
 EOF
 }
@@ -120,7 +122,7 @@ data "archive_file" "fc_zip" {
 resource "alicloud_fc_service" "censcalerservice" {
   name            = "${var.service_name}"
   description     = "${var.service_description}"
-  internet_access = "false"
+  internet_access = "true"
   role            = "${alicloud_ram_role.role.arn}"
 }
 
