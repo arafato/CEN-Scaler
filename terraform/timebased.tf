@@ -15,7 +15,7 @@ resource "alicloud_fc_trigger" "triggerscale_1" {
   type = "timer"
   config = <<EOF
     {
-      "cronExpression": "0 0 6 ? * SAT",
+      "cronExpression": "0 0 6 ? * MON",
       "enable": true,
       "payload": ${jsonencode(chomp("
       {
