@@ -46,6 +46,9 @@ This example scenario can be adapted to different timespans by changing the valu
  
 # How it works
 
+![CEN Setup](docs/arch1.png)
+![CEN Scaler](docs/arch2.png)
+
 
 # Contributions
 ## What do I need to know to help?
