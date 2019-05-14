@@ -45,10 +45,21 @@ The default example of this project as configured in `terraform/timebased.tf` de
 This example scenario can be adapted to different timespans by changing the value of `cronExpression`. You can use [http://www.cronmaker.com/](http://www.cronmaker.com/) to easily generate cron expressions that fit your requirement. You can also add (or remove) triggers to accomodate for your specific scenario. Same is true for the number of region connections which can be extended or reduced as needed.  
  
 # How it works
+Let's look at below diagram first. This picture shows a typical CEN-based setup.   
 
 ![CEN Setup](docs/arch1.png)
+
+VPC A and VPC B are both located in `eu-central-1` (Frankfurt). VPC C is located in `cn-beijing` (Beijing), VPC D is located in `cn-shanghai` (Shanghai). All four VPCs are peered together via a single CEN instance meaning all four VPCs can communicate with each other. The CEN-Instance has an assiged bandwidth package of 20 MBits. This bandwidth is equally distributed (2x 10 MBits) across two region connections: Frankfurt-Beijing and Frankfurt-Shanghai. Communication is between the various VPCs is routed over Alibaba Cloud's private global backbone network.
+
+Bandwidth packages can be freely up- and down-scaled to optimize on costs. So during times where less bandwith is needed (e.g. during weekends), bandwidth can be scaled down to lower values, e.g. 10 MBits. In this case, also the according region connection values need to be updated. Since we distribute the bandwidth equally, we need to set the values to 5 MBits each. During workdays we upscale bandwidth again to 20 Mbits (und also update the region connection values). 
+CEN Scaler helps you to easily configure and automate such tasks. Below figure depicts how CEN Scaler works: 
+
 ![CEN Scaler](docs/arch2.png)
 
+It automatically creates an event-triggered Function Compute that adapts the bandwidth and region connection values according to your configuration. You are free to define as many triggers and different configurations you need to accomodate for your requirements and cost optimizations. CEN Scaler will also setup the neccessary RAM service role and minimum permissions needed to scale the CEN bandwidth. Function Compute will then assume this role and use a temporary token issued by Alibaba Cloud Secure Token Service (STS) to authorize itself against the CEN API when it is triggered. Along with the event trigger the according bandwidth configuration will be passed to the Function Compute instance which it uses to parametrize the call accordingly. 
+
+# Roadmap
+- We are currently working on supporting Cloud Monitor events and alarms to trigger scaling actions. This will allows for metric-based scaling rules for CEN.
 
 # Contributions
 ## What do I need to know to help?
