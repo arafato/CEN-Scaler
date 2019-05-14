@@ -7,7 +7,8 @@
  ######  ######## ##    ##     ######   ######  ##     ## ######## ######## ##     ##
 
 
-# TODO: Add detailed explanation on how to configure a timing event
+# ADAPT TO YOUR NEEDS AND REQUIREMENTS
+# See https://github.com/arafato/CEN-Scaler#example for explanation of this example event trigger configuration.
 resource "alicloud_fc_trigger" "triggerscale_1" {
   service = "${alicloud_fc_service.censcalerservice.name}"
   function = "${alicloud_fc_function.scale.name}"

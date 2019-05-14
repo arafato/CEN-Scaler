@@ -45,7 +45,7 @@ The default example of this project as configured in `terraform/timebased.tf` de
 This example scenario can be adapted to different timespans by changing the value of `cronExpression`. You can use [http://www.cronmaker.com/](http://www.cronmaker.com/) to easily generate cron expressions that fit your requirement. You can also add (or remove) triggers to accomodate for your specific scenario. Same is true for the number of region connections which can be extended or reduced as needed.  
  
 # How it works
-TODO
+
 
 # Contributions
 ## What do I need to know to help?
