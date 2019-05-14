@@ -2,7 +2,7 @@
 This project helps to automatically scale Cloud Enterprise Network (CEN) bandwidth packages based on different metrics and timing events. It ships together with Alibaba Cloud Function code and Terraform templates that set up all neccessary configurations and services to get you going fast.
 
 # Installation and Usage
-CEN Scaler is coposed of two different parts: 
+CEN Scaler is composed of two different parts: 
 - The NodeJS based Alibaba Cloud Function Compute code that is responsible for scaling the bandwidth of your CEN instance at predefined points in time 
 - The Terraform scripts that setup everything in your Alibaba Cloud account to make the automatic scaling work. This includes uploading and configuring the Function Compute code and configuring the minimal access rights and permissions for it to change the bandwidth on your behalf.    
 ## NPM
