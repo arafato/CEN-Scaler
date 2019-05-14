@@ -66,3 +66,5 @@ terraform/fc.zip
 # terraform
 *.tfstate*
 terraform/.terraform
+
+.DS_Store
