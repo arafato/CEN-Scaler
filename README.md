@@ -7,7 +7,7 @@ CEN Scaler is composed of two different parts:
 - The Terraform scripts that setup everything in your Alibaba Cloud account to make the automatic scaling work. This includes uploading and configuring the Function Compute code and configuring the minimal access rights and permissions for it to change the bandwidth on your behalf.    
 ## NPM
 In order to install the neccessary dependencies of the Alibaba Cloud Function Compute code you need to have [NPM](https://www.npmjs.com/get-npm) installed on your machine. This repository does not include the depending node modules.
-Once installed please run the following command in the `src` folder of this project:
+Once installed please run the following command in the `src/time` folder of this project:
 `$ npm install`
  
  This will install all neccessary dependencies of the Alibaba Cloud Function Compute project on your local machine into `src/node_modules`. This will be bundled into a zip file later and uploaded into the cloud.
@@ -25,7 +25,7 @@ $ export ALICLOUD_SECRET_KEY=<your_secret_key>
 $ export ALICLOUD_REGION=eu-central-1 (or any other region which supports Function Compute)
 ```
  
- Then change to the `terraform/` directory and run
+ Then change to the `terraform/timebased` directory and run
  ```bash
 $ terraform init
 $ terraform apply
@@ -34,11 +34,11 @@ This will configure Terraform accordingly for use with Alibaba Cloud and then ex
 
 ## Terraform Scripts
 Before you can actually install CEN Scaler in your account you need to make some configuration changes in the scripts:
-- Edit `terraform/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/variables.tf#L3))
-- Edit `terraform/timebased.tf`: Adapt the Alibaba Cloud Function Compute event triggers to your specific needs in terms of number and also time spans ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/timebased.tf)).   
+- Edit `terraform/time/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/variables.tf#L3))
+- Edit `terraform/time/timebased.tf`: Adapt the Alibaba Cloud Function Compute event triggers to your specific needs in terms of number and also time spans ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/timebased.tf)).   
 
 ### Example
-The default example of this project as configured in `terraform/timebased.tf` defines the following scenario:
+The default example of this project as configured in `terraform/time/timebased.tf` defines the following scenario:
 - As defined by trigger `triggerscale_1`: Starting every Monday at 6am the CEN bandwidth is upscaled to 20 MBits. This bandwidth is then equally distributed between two region connections (each 10 MBits): `eu-central-1` <-> `cn-bejing`and `eu-central-1` <-> `cn-shanghai`. 
 - As defined by trigger `triggerscale_2`: Starting every Saturday at 6am the CEN bandwidth is downscaled to 10 MBits. This bandwidth is then equally distributed between two region connections (each 5 MBits): `eu-central-1` <-> `cn-bejing`and `eu-central-1` <-> `cn-shanghai`.
 

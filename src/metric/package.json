@@ -1,0 +1,29 @@
+{
+  "name": "censcaler-metric",
+  "version": "1.0.0",
+  "description": "Alibaba Cloud Function Compute to automatically scale CEN bandwidth packages based on Cloud Monitor Alarms.",
+  "main": "index.js",
+  "scripts": {
+    "build": "zip -r censcaler.zip *",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arafato/CEN-Scaler.git"
+  },
+  "keywords": [
+    "alibaba",
+    "cloud",
+    "alicloud",
+    "CEN"
+  ],
+  "author": "Oliver Arafat",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/arafato/CEN-Scaler/issues"
+  },
+  "homepage": "https://github.com/arafato/CEN-Scaler#readme",
+  "dependencies": {
+    "@alicloud/pop-core": "^1.7.6"
+  }
+}
