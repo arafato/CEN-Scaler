@@ -111,7 +111,7 @@ It will then do the scaling: first, it will up/downscale the bandwidth of the CE
 CEN Scaler will also setup the neccessary RAM service role and minimum permissions needed to scale the CEN bandwidth and region connection bandwidth. Function Compute will then assume this role and use a temporary token issued by Alibaba Cloud Secure Token Service (STS) to authorize itself against the CEN API when it is triggered.
 
 # Roadmap
-- We are currently working on integrating an error queue that lets you monitor and react on any errors that happended during up/downscaling CEN bandwidth capacity.
+- We are currently working on integrating an error queue that lets you monitor and react on any errors that happended during up/downscaling the CEN bandwidth capacity.
 
 # Contributions
 ## What do I need to know to help?
