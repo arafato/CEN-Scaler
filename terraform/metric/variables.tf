@@ -1,3 +1,8 @@
+variable "cen_id" {
+  description = "The ID of your Cloud Enterprise Netork (CEN) instance."
+  default = "thisdoesnotexist"
+}
+
 variable "shared_secret" {
   description = "The shared secret between CMS and your HTTP-triggered Function Compute."
   default = "changethisvalue"
@@ -25,11 +30,6 @@ variable "scale_strategy_region_down_eu-central-1_cn-hangzhou" {
 
 variable "fc_version" {
   default = "2016-08-15"
-}
-
-variable "cen_id" {
-  description = "The ID of your Cloud Enterprise Netork (CEN) instance."
-  default = "thisdoesnotexist"
 }
 
 variable "cen-scaler-policy" {
