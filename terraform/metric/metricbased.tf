@@ -14,17 +14,17 @@ locals {
   webhook = "https://${data.alicloud_account.current.id}.${data.alicloud_regions.current_region.regions.0.id}.fc.aliyuncs.com/${var.fc_version}/proxy/${var.service_name}/${var.function_name}/?ss=${var.shared_secret}"
 	env = {
 		CEN_ID = "${var.cen_id}"
-		scale_strategy_region_up_eu-central-1_cn-hangzhou = <<EOF
+		scale_strategy_censcaler_region_up = <<EOF
 		{
-			"sourceRegion": "eu-central-1",
-			"targetRegion": "cn-bejing",
+			"sourceRegion": "cn-beijing",
+			"targetRegion": "eu-central-1",
 			"step": 1
 		}
 	EOF
-		scale_strategy_region_down_eu-central-1_cn-hangzhou = <<EOF
+		scale_strategy_censcaler_region_down = <<EOF
 		{
-			"sourceRegion": "eu-central-1",
-			"targetRegion": "cn-bejing",
+			"sourceRegion": "cn-beijing",
+			"targetRegion": "eu-central-1",
 			"step": -1
 		}
 	EOF

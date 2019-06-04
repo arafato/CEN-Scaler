@@ -63,15 +63,16 @@ Before you can actually install CEN Scaler in your account you need to make some
     * Set the shared secret variable ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/metric/variables.tf#L8)) to a secure value. It is shared between the Cloud Monitor alarms and the Function Compute service to restrict access to it since it has a public endpoint
 
 * Edit `./terraform/metric/metricbased.tf`: 
-    * Add / Modify the according Cloud Monitor alarms and define your specific traffic thresholds and metric aggregation. Refer to the two pre-defined alarms `"region_up_eu-central-1_cn-hangzhou"` and `"region_down_eu-central-1_cn-hangzhou"` as an example.
+    * Add / Modify the according Cloud Monitor alarms and define your specific traffic thresholds and metric aggregation. Refer to the two pre-defined alarm resources `"region_up_eu-central-1_cn-hangzhou"` and `"region_down_eu-central-1_cn-hangzhou"` as an example.
     * Add / Modify the `env` variable with the according scaling stragies. A strategy defines the source and target region, and the step. The `step` variable indicates the bandwidth amount in MBit/s on how much to scale up or down the current bandwidth if a certain alarm is triggered. 
 
 To keep the NodeJS code generic, CEN-Scaler expects the following naming conventions when defining the scaling strategies:
 The responsible scaling strategy for a particular alarm needs to be named according to the following convention
 
- `scale_strategy_<TF Resourcename of alarm>` 
+ `scale_strategy_<alarmname>` 
 
-So the Terraform resource name of the alarm needs to be prefixed with `"scale_strategy_"`.
+So the prefix is `"scale_strategy_"`.
+
 # How it works
 This section will discuss the design and inner-workings of both CEN-Scaler modes: Time-based and Metric-based.
 
@@ -84,7 +85,7 @@ Let's look at below diagram first. This picture shows a typical CEN-based setup.
 VPC A and VPC B are both located in `eu-central-1` (Frankfurt). VPC C is located in `cn-beijing` (Beijing), VPC D is located in `cn-shanghai` (Shanghai). All four VPCs are peered together via a single CEN instance meaning all four VPCs can communicate with each other. The CEN-Instance has an assiged bandwidth package of 20 MBits. This bandwidth is equally distributed (2x 10 MBits) across two region connections: Frankfurt-Beijing and Frankfurt-Shanghai. Communication is between the various VPCs is routed over Alibaba Cloud's private global backbone network.
 
 Bandwidth packages can be freely up- and down-scaled to optimize on costs. So during times where less bandwith is needed (e.g. during weekends), bandwidth can be scaled down to lower values, e.g. 10 MBits. In this case, also the according region connection values need to be updated. Since we distribute the bandwidth equally, we need to set the values to 5 MBits each. During workdays we upscale bandwidth again to 20 Mbits (und also update the region connection values). 
-CEN Scaler helps you to easily configure and automate such tasks. Below figure depicts how CEN Scaler works: 
+CEN Scaler helps you to easily configure and automate such tasks. Below figure depicts how CEN Scaler (time-based mode) works: 
 
 ![CEN Scaler - Time-based](docs/arch2.png)
 
@@ -96,11 +97,21 @@ The example described here is implemented in our [default metric template](https
 We want to automatically upscale the current region bandwidth by 1 MBit/s if the every minute average utilization of the current region bandwidth was above 90% for the last 2 minutes. Likewise we would like to downscale the current bandwidth by 1 Mbit/s if the average utilization was below 60% for the last 3 minutes.
 No matter if we up- or downscale, we also need to adjust the current bandwidth package accordingly that is attached to the CEN instance.
 
+Below picture depicts how CEN Scaler metric-based version works:
+
 ![CEN Scaler - Metrics-based](docs/metrics.png)
 
+The CEN service continuously sends metrics about the current utilization of the outbound rate of the region connectivity between `eu-central-1` and `cn-beijing`.
+
+Based on your Terraform configuration CEN Scaler will create different threshold alarms which work on a minute-level resolution. In our example, we have defined two alarms: one that gets triggered once the average is utilization is greater equal 90% for at least 2 minutes of the current maximum bandwidth, and one that is triggered if the average utilization is below 60% for the last 3 minutes. You are free to define as many alarms you need to accomodate for your requirements.
+
+Once an alarm is triggered it will call a webhook (POST request) which is exposed by an HTTP-Trigger of our Function Compute service. This endpoint is secured by a shared secret which you have configured in your Terraform variables script (see configuration instructions above). Based on the alarm name (which is sent as part of the request body) the Function Compute service can select the according scaling strategy which is exposed as an environment variable.
+It will then do the scaling: first, it will up/downscale the bandwidth of the CEN bandwidth package, and the up/downscale the region connection by the same value.
+
+CEN Scaler will also setup the neccessary RAM service role and minimum permissions needed to scale the CEN bandwidth and region connection bandwidth. Function Compute will then assume this role and use a temporary token issued by Alibaba Cloud Secure Token Service (STS) to authorize itself against the CEN API when it is triggered.
 
 # Roadmap
-- We are currently working on supporting Cloud Monitor events and alarms to trigger scaling actions. This will allows for metric-based scaling rules for CEN.
+- We are currently working on integrating an error queue that lets you monitor and react on any errors that happended during up/downscaling CEN bandwidth capacity.
 
 # Contributions
 ## What do I need to know to help?
