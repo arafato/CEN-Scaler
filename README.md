@@ -58,8 +58,11 @@ This example scenario can be adapted to different timespans by changing the valu
 ## Terraform Scripts - Metric
 Let's look at how to configure the metric-based version of CEN-Scaler.
 Before you can actually install CEN Scaler in your account you need to make some configuration changes in the scripts:
-* Edit `./terraform/metric/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/metric/variables.tf#L3)) you want to use
-* Edit `./terraform/metric/metricbase.tf`: 
+* Edit `./terraform/metric/variables.tf`: 
+    * Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/metric/variables.tf#L3)) you want to use
+    * Set the shared secret variable ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/metric/variables.tf#L8)) to a secure value. It is shared between the Cloud Monitor alarms and the Function Compute service to restrict access to it since it has a public endpoint
+
+* Edit `./terraform/metric/metricbased.tf`: 
     * Add / Modify the according Cloud Monitor alarms and define your specific traffic thresholds and metric aggregation. Refer to the two pre-defined alarms `"region_up_eu-central-1_cn-hangzhou"` and `"region_down_eu-central-1_cn-hangzhou"` as an example.
     * Add / Modify the `env` variable with the according scaling stragies. A strategy defines the source and target region, and the step. The `step` variable indicates the bandwidth amount in MBit/s on how much to scale up or down the current bandwidth if a certain alarm is triggered. 
 
@@ -68,10 +71,12 @@ The responsible scaling strategy for a particular alarm needs to be named accord
 
  `scale_strategy_<TF Resourcename of alarm>` 
 
-So the Terraform resource name of the alarm is prefixed with `"scale_strategy_"`.
+So the Terraform resource name of the alarm needs to be prefixed with `"scale_strategy_"`.
 # How it works
 This section will discuss the design and inner-workings of both CEN-Scaler modes: Time-based and Metric-based.
+
 ## Time-based
+The example described here is implemented in our [default time template](https://github.com/arafato/CEN-Scaler/blob/master/terraform/time/timebased.tf).
 Let's look at below diagram first. This picture shows a typical CEN-based setup.   
 
 ![CEN Setup](docs/arch1.png)
@@ -84,6 +89,15 @@ CEN Scaler helps you to easily configure and automate such tasks. Below figure d
 ![CEN Scaler](docs/arch2.png)
 
 It automatically creates an event-triggered Function Compute that adapts the bandwidth and region connection values according to your configuration. You are free to define as many triggers and different configurations you need to accomodate for your requirements and cost optimizations. CEN Scaler will also setup the neccessary RAM service role and minimum permissions needed to scale the CEN bandwidth. Function Compute will then assume this role and use a temporary token issued by Alibaba Cloud Secure Token Service (STS) to authorize itself against the CEN API when it is triggered. Along with the event trigger the according bandwidth configuration will be passed to the Function Compute instance which it uses to parametrize the call accordingly. 
+
+## Metric-based
+The example described here is implemented in our [default metric template](https://github.com/arafato/CEN-Scaler/blob/master/terraform/metric/metricbased.tf). Let's again look at the typcial CEN-based setup as discussed in previous section.  This time we focus on dynamically scaling the region bandwidth between `eu-central-1`(Frankfurt) and `cn-beijing` based on the current network utilization.
+
+We want to automatically upscale the current region bandwidth by 1 MBit/s if the every minute average utilization of the current region bandwidth was above 90% for the last 2 minutes. Likewise we would like to downscale the current bandwidth by 1 Mbit/s if the average utilization was below 60% for the last 3 minutes.
+No matter if we up- or downscale, we also need to adjust the current bandwidth package accordingly that is attached to the CEN instance.
+
+
+
 
 # Roadmap
 - We are currently working on supporting Cloud Monitor events and alarms to trigger scaling actions. This will allows for metric-based scaling rules for CEN.
