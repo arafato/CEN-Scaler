@@ -73,6 +73,18 @@ The responsible scaling strategy for a particular alarm needs to be named accord
 
 So the prefix is `"scale_strategy_"`.
 
+### Example
+The default example of this project as configured in `./terraform/metric/metricbased.tf` defines the following scenario: We want to dynamically up/downscale the region bandwidth between `eu-central-1` and `cn-beijing`whenever the utilization between these two regions reach a certain threshold for a certain period of time. In particular, we would like to upscale the bandwidth by 1 MBit/s each time the utilization of the current bandwidth exceeds 90% for more than 2 minutes, and downscale the bandwidth by 1 MBit/s each time the utilization falls below 60% for more than 3 minutes.
+
+In order to realite this, we have defined two Cloud Monitor alarms named `"censcaler_region_up"` and `"censcaler_region_down"` respectively which have the above scenario encoded. Four of the attributes to highlight:
+* `threshold`: this defines the threshold value in percent that activates the alarms
+* `triggered_count`: this defines how how often this alarms needs to be triggered util the webhook is actually called
+* `operator`: the comparison operator that compares the current bandwidth value against the threshold value
+* `dimensions`: this defines the specific region connectivity between the individual Alibaba Cloud regions  
+
+Together with these alarms we have also defined according environment variables named `"scale_strategy_censcaler_region_up"` and `"scale_strategy_censcaler_region_down"`, respectively. Both define the matching scaling rule of the according alarm. The scaling rule or as we call it "scale strategy" defines the bandwidth increase or decrease value (in MBit/s) as defined by the attribute `step`. It can be a positive or negative number.  
+A scale strategy is associated to a particular by following the prevously mentioned naming convention ("`scale_strategy_`" prefix).
+
 # How it works
 This section will discuss the design and inner-workings of both CEN-Scaler modes: Time-based and Metric-based.
 

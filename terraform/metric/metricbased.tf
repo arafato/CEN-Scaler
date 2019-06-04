@@ -38,8 +38,8 @@ locals {
 	  dimensions = {
 	    CenId = "${var.cen_id}"
       geographicSpanId = "china_europe"
-      localRegionId = "eu-central-1"
-      oppositeRegionId = "cn-hangzhou"
+      localRegionId = "cn-hangzhou"
+      oppositeRegionId = "eu-central-1"
 	  }
 	  statistics ="Average"
 	  period = 60
@@ -60,12 +60,12 @@ resource "alicloud_cms_alarm" "region_down_eu-central-1_cn-hangzhou" {
 	  dimensions = {
 	    CenId = "${var.cen_id}"
       geographicSpanId = "china_europe"
-      localRegionId = "eu-central-1"
-      oppositeRegionId = "cn-hangzhou"
+      localRegionId = "cn-hangzhou"
+      oppositeRegionId = "eu-central-1"
 	  }
 	  statistics ="Average"
 	  period = 60
-	  operator = ">"
+	  operator = "<="
 	  threshold = 60
 	  triggered_count = 3
 	  contact_groups = ["%s"]
