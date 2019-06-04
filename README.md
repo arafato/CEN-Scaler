@@ -86,7 +86,7 @@ VPC A and VPC B are both located in `eu-central-1` (Frankfurt). VPC C is located
 Bandwidth packages can be freely up- and down-scaled to optimize on costs. So during times where less bandwith is needed (e.g. during weekends), bandwidth can be scaled down to lower values, e.g. 10 MBits. In this case, also the according region connection values need to be updated. Since we distribute the bandwidth equally, we need to set the values to 5 MBits each. During workdays we upscale bandwidth again to 20 Mbits (und also update the region connection values). 
 CEN Scaler helps you to easily configure and automate such tasks. Below figure depicts how CEN Scaler works: 
 
-![CEN Scaler](docs/arch2.png)
+![CEN Scaler - Time-based](docs/arch2.png)
 
 It automatically creates an event-triggered Function Compute that adapts the bandwidth and region connection values according to your configuration. You are free to define as many triggers and different configurations you need to accomodate for your requirements and cost optimizations. CEN Scaler will also setup the neccessary RAM service role and minimum permissions needed to scale the CEN bandwidth. Function Compute will then assume this role and use a temporary token issued by Alibaba Cloud Secure Token Service (STS) to authorize itself against the CEN API when it is triggered. Along with the event trigger the according bandwidth configuration will be passed to the Function Compute instance which it uses to parametrize the call accordingly. 
 
@@ -96,7 +96,7 @@ The example described here is implemented in our [default metric template](https
 We want to automatically upscale the current region bandwidth by 1 MBit/s if the every minute average utilization of the current region bandwidth was above 90% for the last 2 minutes. Likewise we would like to downscale the current bandwidth by 1 Mbit/s if the average utilization was below 60% for the last 3 minutes.
 No matter if we up- or downscale, we also need to adjust the current bandwidth package accordingly that is attached to the CEN instance.
 
-
+![CEN Scaler - Metrics-based](docs/metrics.png)
 
 
 # Roadmap
