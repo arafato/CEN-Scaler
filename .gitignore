@@ -61,13 +61,13 @@ typings/
 .next
 
 # CEN Scaler
-terraform/metricbased/fc.zip
-terraform/timebased/fc.zip
+terraform/metric/fc.zip
+terraform/time/fc.zip
 
 # terraform
 *.tfstate*
 terraform/.terraform
-terraform/metricbased/.terraform
-terraform/timebased/.terraform
+terraform/metric/.terraform
+terraform/time/.terraform
 
 .DS_Store
