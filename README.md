@@ -69,7 +69,7 @@ Before you can actually install CEN Scaler in your account you need to make some
 To keep the NodeJS code generic, CEN-Scaler expects the following naming conventions when defining the scaling strategies:
 The responsible scaling strategy for a particular alarm needs to be named according to the following convention
 
- `scale_strategy_<alarmname>`
+ `scale_strategy_<alarmname>`
 
 So the prefix is `"scale_strategy_"`.
 
