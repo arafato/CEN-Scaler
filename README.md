@@ -45,21 +45,30 @@ This will configure Terraform accordingly for use with Alibaba Cloud and then ex
 ## Terraform Scripts - Time
 Let's look at how to configure the time-based version of CEN-Scaler.
 Before you can actually install CEN Scaler in your account you need to make some configuration changes in the scripts:
-- Edit `terraform/time/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/variables.tf#L3))
-- Edit `terraform/time/timebased.tf`: Adapt the Alibaba Cloud Function Compute event triggers to your specific needs in terms of number and also time spans ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/timebased.tf)).   
+* Edit `./terraform/time/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/time/variables.tf#L3)) you want to use
+* Edit `./terraform/time/timebased.tf`: Adapt the Alibaba Cloud Function Compute event triggers to your specific needs in terms of number and also time spans ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/timebased.tf)).   
 
 ### Example
-The default example of this project as configured in `terraform/time/timebased.tf` defines the following scenario:
-- As defined by trigger `triggerscale_1`: Starting every Monday at 6am the CEN bandwidth is upscaled to 20 MBits. This bandwidth is then equally distributed between two region connections (each 10 MBits): `eu-central-1` <-> `cn-bejing`and `eu-central-1` <-> `cn-shanghai`. 
-- As defined by trigger `triggerscale_2`: Starting every Saturday at 6am the CEN bandwidth is downscaled to 10 MBits. This bandwidth is then equally distributed between two region connections (each 5 MBits): `eu-central-1` <-> `cn-bejing`and `eu-central-1` <-> `cn-shanghai`.
+The default example of this project as configured in `./terraform/time/timebased.tf` defines the following scenario:
+* As defined by trigger `triggerscale_1`: Starting every Monday at 6am the CEN bandwidth is upscaled to 20 MBits. This bandwidth is then equally distributed between two region connections (each 10 MBits): `eu-central-1` <-> `cn-bejing`and `eu-central-1` <-> `cn-shanghai`. 
+* As defined by trigger `triggerscale_2`: Starting every Saturday at 6am the CEN bandwidth is downscaled to 10 MBits. This bandwidth is then equally distributed between two region connections (each 5 MBits): `eu-central-1` <-> `cn-bejing`and `eu-central-1` <-> `cn-shanghai`.
 
 This example scenario can be adapted to different timespans by changing the value of `cronExpression`. You can use [http://www.cronmaker.com/](http://www.cronmaker.com/) to easily generate cron expressions that fit your requirement. You can also add (or remove) triggers to accomodate for your specific scenario. Same is true for the number of region connections which can be extended or reduced as needed.  
 
 ## Terraform Scripts - Metric
-Let's look at how to configure the time-based version of CEN-Scaler.
+Let's look at how to configure the metric-based version of CEN-Scaler.
 Before you can actually install CEN Scaler in your account you need to make some configuration changes in the scripts:
-- Edit `terraform/metric/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/variables.tf#L3))
+* Edit `./terraform/metric/variables.tf`: Change the variable `cen_id` to your CEN-Instance ID ([see here](https://github.com/arafato/CEN-Scaler/blob/master/terraform/metric/variables.tf#L3)) you want to use
+* Edit `./terraform/metric/metricbase.tf`: 
+    * Add / Modify the according Cloud Monitor alarms and define your specific traffic thresholds and metric aggregation. Refer to the two pre-defined alarms `"region_up_eu-central-1_cn-hangzhou"` and `"region_down_eu-central-1_cn-hangzhou"` as an example.
+    * Add / Modify the `env` variable with the according scaling stragies. A strategy defines the source and target region, and the step. The `step` variable indicates the bandwidth amount in MBit/s on how much to scale up or down the current bandwidth if a certain alarm is triggered. 
 
+To keep the NodeJS code generic, CEN-Scaler expects the following naming conventions when defining the scaling strategies:
+The responsible scaling strategy for a particular alarm needs to be named according to the following convention
+
+ `scale_strategy_<TF Resourcename of alarm>` 
+
+So the Terraform resource name of the alarm is prefixed with `"scale_strategy_"`.
 # How it works
 This section will discuss the design and inner-workings of both CEN-Scaler modes: Time-based and Metric-based.
 ## Time-based
