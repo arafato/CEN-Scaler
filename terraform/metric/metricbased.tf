@@ -12,20 +12,23 @@
 
 locals {
   webhook = "https://${data.alicloud_account.current.id}.${data.alicloud_regions.current_region.regions.0.id}.fc.aliyuncs.com/${var.fc_version}/proxy/${var.service_name}/${var.function_name}/?ss=${var.shared_secret}"
-	scale_strategy_region_up_eu-central-1_cn-hangzhou = <<EOF
-    {
+	env = {
+		CEN_ID = "${var.cen_id}"
+		scale_strategy_region_up_eu-central-1_cn-hangzhou = <<EOF
+		{
 			"sourceRegion": "eu-central-1",
-      "targetRegion": "cn-bejing",
-      "step": 1
+			"targetRegion": "cn-bejing",
+			"step": 1
 		}
-EOF
-scale_strategy_region_down_eu-central-1_cn-hangzhou = <<EOF
-    {
+	EOF
+		scale_strategy_region_down_eu-central-1_cn-hangzhou = <<EOF
+		{
 			"sourceRegion": "eu-central-1",
-      "targetRegion": "cn-bejing",
-      "step": -1
+			"targetRegion": "cn-bejing",
+			"step": -1
 		}
-EOF
+	EOF
+	}
 }
 
   resource "alicloud_cms_alarm" "region_up_eu-central-1_cn-hangzhou" {
@@ -33,7 +36,7 @@ EOF
 	  project = "acs_cen"
 	  metric = "InternetOutRatePercentByConnectionRegion"
 	  dimensions = {
-	    CenId = "cenid"
+	    CenId = "${var.cen_id}"
       geographicSpanId = "china_europe"
       localRegionId = "eu-central-1"
       oppositeRegionId = "cn-hangzhou"
@@ -55,7 +58,7 @@ resource "alicloud_cms_alarm" "region_down_eu-central-1_cn-hangzhou" {
 	  project = "acs_cen"
 	  metric = "InternetOutRatePercentByConnectionRegion"
 	  dimensions = {
-	    CenId = "cenid"
+	    CenId = "${var.cen_id}"
       geographicSpanId = "china_europe"
       localRegionId = "eu-central-1"
       oppositeRegionId = "cn-hangzhou"
@@ -147,9 +150,5 @@ resource "alicloud_fc_function" "scale" {
   memory_size = "${var.function_memory_size}"
   runtime     = "${var.function_runtime}"
   handler     = "${var.function_handler}"
-  environment_variables {
-    CEN_ID = "${var.cen_id}"
-		scale_strategy_region_up_eu-central-1_cn-hangzhou = "${local.scale_strategy_region_up_eu-central-1_cn-hangzhou}"
-		scale_strategy_region_down_eu-central-1_cn-hangzhou = "${local.scale_strategy_region_down_eu-central-1_cn-hangzhou}"
-  }
+  environment_variables = "${local.env}"
 }

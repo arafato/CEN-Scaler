@@ -22,9 +22,12 @@ function scaleHandler(alertName) {
     let currentBandwidth;
     for (const package of result.CenBandwidthPackages.CenBandwidthPackage) {
         currentBandwidth = package.filter(id => id == CEN_ID)[0];
+        if (currentBandwidth !== undefined) {
+            break;
+        }
     }
     if (currentBandwidth === undefined) {
-        throw new Error("CEN Instance has now active bandwidth package assigned.");
+        throw new Error("CEN Instance has no active bandwidth package assigned.");
     }
     if (currentBandwidth + strategy.step < 2) {
         return;
