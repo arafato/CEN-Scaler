@@ -2,7 +2,7 @@ const Core = require('@alicloud/pop-core');
 
 const CEN_ID = process.env['CEN_ID'];
 
-module.exports.handler = function (event, context, callback) {
+module.exports.handler = async function (event, context, callback) {
     const client = new Core({
         accessKeyId: context.credentials.accessKeyId,
         accessKeySecret: context.credentials.accessKeySecret,
