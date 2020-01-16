@@ -20,6 +20,7 @@ resource "alicloud_fc_trigger" "triggerscale_1" {
       "enable": true,
       "payload": ${jsonencode(chomp("
       {
+         \"scale\": \"up\",
          \"cenBandwidth\": 20,
          \"regionConnections\": [
           {
@@ -49,6 +50,7 @@ resource "alicloud_fc_trigger" "triggerscale_2" {
       "enable": true,
       "payload": ${jsonencode(chomp("
       {
+         \"scale\": \"down\",
          \"cenBandwidth\": 10,
          \"regionConnections\": [
           {

@@ -12,24 +12,40 @@ module.exports.handler = function (event, context, callback) {
     });
 
 
-    event = JSON.parse(event.toString("utf8"));
+    event = JSON.parse(event.paload.toString("utf8"));
 
     try {
         const cenparams = {
             "CenBandwidthPackageId": CEN_ID,
             "Bandwidth": event.cenBandwidth
         }
-        await client.request('ModifyCenBandwidthPackageSpec', cenparams, { method: 'POST' });
-        for (const rc of event.regionConnections) {
-            const rcparams = {
-                "CenId": CEN_ID,
-                "LocalRegionId": rc.sourceRegion,
-                "OppositeRegionId": rc.targetRegion,
-                "BandwidthLimit": rc.bandwidth
-            }
-            await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' });
-            callback(null, 'Successfully scaled CEN Bandwidth.'); 
 
+        if (event.scale === "up") {
+            await client.request('ModifyCenBandwidthPackageSpec', cenparams, { method: 'POST' });
+            for (const rc of event.regionConnections) {
+                const rcparams = {
+                    "CenId": CEN_ID,
+                    "LocalRegionId": rc.sourceRegion,
+                    "OppositeRegionId": rc.targetRegion,
+                    "BandwidthLimit": rc.bandwidth
+                }
+                await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' });
+                callback(null, 'Successfully scaled CEN Bandwidth.'); 
+            }
+        }
+        if (event.scale === "down") {
+            for (const rc of event.regionConnections) {
+                const rcparams = {
+                    "CenId": CEN_ID,
+                    "LocalRegionId": rc.sourceRegion,
+                    "OppositeRegionId": rc.targetRegion,
+                    "BandwidthLimit": rc.bandwidth
+                }
+                await client.request('SetCenInterRegionBandwidthLimit', rcparams, { method: 'POST' });
+              
+            }
+            await client.request('ModifyCenBandwidthPackageSpec', cenparams, { method: 'POST' });
+            callback(null, 'Successfully scaled CEN Bandwidth.');
         }
     } catch (err) {
         console.log(err);
