@@ -1,6 +1,7 @@
 const Core = require('@alicloud/pop-core');
 
-const CEN_ID = process.env['CEN_ID'];
+const CEN_ID = process.env['CEN_ID'],
+ CEN_BWP_ID = process.env['CEN_BWP_ID'];
 
 module.exports.handler = async function (event, context, callback) {
     const client = new Core({
@@ -12,17 +13,17 @@ module.exports.handler = async function (event, context, callback) {
     });
 
 
-    event = JSON.parse(event.paload.toString("utf8"));
+    const payload = JSON.parse(event.payload.toString("utf8"));
 
     try {
         const cenparams = {
-            "CenBandwidthPackageId": CEN_ID,
-            "Bandwidth": event.cenBandwidth
+            "CenBandwidthPackageId": CEN_BWP_ID,
+            "Bandwidth": payload.cenBandwidth
         }
 
-        if (event.scale === "up") {
+        if (payload.scale === "up") {
             await client.request('ModifyCenBandwidthPackageSpec', cenparams, { method: 'POST' });
-            for (const rc of event.regionConnections) {
+            for (const rc of payload.regionConnections) {
                 const rcparams = {
                     "CenId": CEN_ID,
                     "LocalRegionId": rc.sourceRegion,
@@ -33,8 +34,8 @@ module.exports.handler = async function (event, context, callback) {
                 callback(null, 'Successfully scaled CEN Bandwidth.'); 
             }
         }
-        if (event.scale === "down") {
-            for (const rc of event.regionConnections) {
+        if (payload.scale === "down") {
+            for (const rc of payload.regionConnections) {
                 const rcparams = {
                     "CenId": CEN_ID,
                     "LocalRegionId": rc.sourceRegion,

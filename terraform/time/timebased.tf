@@ -139,5 +139,6 @@ resource "alicloud_fc_function" "scale" {
   handler     = "${var.function_handler}"
   environment_variables {
     CEN_ID = "${var.cen_id}"
+    CEN_BWP_ID = "${var.cen_bwpackage_id}"
   }
 }

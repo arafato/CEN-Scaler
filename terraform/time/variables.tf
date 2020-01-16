@@ -3,6 +3,11 @@ variable "cen_id" {
   default = "thisdoesnotexist"
 }
 
+variable "cen_bwpackage_id" {
+  description = "The ID of your Cloud Enterprise Netork (CEN) bandwidth package."
+  default = "thisdoesnotexist"
+}
+
 variable "cen-scaler-policy" {
   default = "cen-scaler-policy"
 }
